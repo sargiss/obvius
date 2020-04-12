@@ -1,0 +1,5 @@
+﻿{
+  "DataConnectionString": "Server=obvius-sqlserver;Database=obviusDb;User Id=obvius_client;Password=1qaz!QAZ;",
+  "DataProvider": "sqlserver",
+  "RawDataSettings": {}
+}

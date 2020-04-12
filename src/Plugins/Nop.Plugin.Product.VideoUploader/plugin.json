@@ -1,0 +1,11 @@
+{
+    "Group": "Obvius", 
+    "FriendlyName": "Video uploader", 
+    "SystemName": "Nop.Plugin.Product.VideoUploader",
+    "Version": "1.0",
+    "SupportedVersions": [ "4.20", "4.30" ], 
+    "Author": "agadzhanov",
+    "DisplayOrder": 1,
+    "FileName": "Nop.Plugin.Product.VideoUploader.dll", 
+    "Description": "This Plugin/Widget is build as an example for nopCommerce documentation."
+}

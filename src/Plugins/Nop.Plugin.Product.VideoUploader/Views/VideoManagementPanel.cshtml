@@ -1,0 +1,238 @@
+@using Nop.Plugin.Product.VideoUploader.Models;
+@using Nop.Web.Framework.Models.DataTables;
+
+@model ProductVideoManagementModel
+
+@{
+    Html.AddCssFileParts("~/lib/fineuploader/fine-uploader.min.css");
+    Html.AddScriptParts("~/lib/fineuploader/jquery.fine-uploader.min.js");
+}
+
+<div class="panel-body">
+    @if (Model.ProductId > 0)
+    {
+        <div class="sub-panel">
+
+            @await Html.PartialAsync("Table", new DataTablesModel
+            {
+                Name = "productvideos-grid",
+                UrlRead = new DataUrl(Url.Content("~/Plugin/ProductVideo/List/" + Model.ProductId)),
+                UrlDelete = new DataUrl(Url.Content("~/Plugin/ProductVideo/deleteData")),
+                UrlUpdate = new DataUrl(Url.Content("~/Plugin/ProductVideo/uploadData")),
+                Length = Model.VideoListPageSize,
+                LengthMenu = Model.AvailablePageSizes,
+                ColumnCollection = new List<ColumnProperty>
+                    {
+                        new ColumnProperty(nameof(ProductVideoModel.OverrideTitleAttribute))
+                        {
+                            Title = "Title",
+                            Width = "250",
+                            Editable = true,
+                            EditType = EditType.String
+                        },
+                        new ColumnProperty(nameof(ProductVideoModel.FromSec))
+                        {
+                            Title = "From sec",
+                            Width = "150",
+                            ClassName = NopColumnClassDefaults.CenterAll,
+                            Editable = true,
+                            EditType = EditType.Number
+                        },
+                        new ColumnProperty(nameof(ProductVideoModel.ToSec))
+                        {
+                            Title = "To sec",
+                            Width = "150",
+                            Editable = true,
+                            EditType = EditType.Number
+                        },
+                        new ColumnProperty(nameof(ProductVideoModel.VideoUrl))
+                        {
+                            Title = "URL",
+                            Render = new RenderCustom("renderPicturesColumnProductPictureUrl"),
+                            Editable = false
+                        },
+                        new ColumnProperty(nameof(ProductVideoModel.Id))
+                        {
+                            Title = "edit",
+                            Width = "200",
+                            ClassName =  NopColumnClassDefaults.Button,
+                            Render = new RenderButtonsInlineEdit()
+                        },
+                        new ColumnProperty(nameof(ProductVideoModel.Id))
+                        {
+                            Title = "delete",
+                            Width = "100",
+                            Render = new RenderButtonRemove("delete"),
+                            ClassName = NopColumnClassDefaults.Button
+                        }
+                    }
+            })
+            
+            <script>
+                function renderPicturesColumnProductPictureUrl(data, type, row, meta) {
+                    return '<a href="' + row.VideoUrl + '" target="_blank">' + row.VideoUrl + '</a>';
+                }
+            </script>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Add new video
+            </div>
+            <div class="panel-body">
+                <script>
+                    $(document).ready(function() {
+
+                        function getData(){
+                            var fromSec = $("#@Html.IdFor(model => model.AddVideoModel.FromSec)").val();
+                            var toSec = $("#@Html.IdFor(model => model.AddVideoModel.ToSec)").val();
+                            var overrideTitleAttribute = $("#@Html.IdFor(model => model.AddVideoModel.OverrideTitleAttribute)").val();
+                        
+
+                            var postData = {
+                                fromSec: fromSec,
+                                toSec: toSec,
+                                overrideTitleAttribute: overrideTitleAttribute,
+                                productId: '@Model.ProductId'
+                            };
+                            addAntiForgeryToken(postData);
+
+                            return postData;
+                        }
+
+                        function uploadData(linkId){                           
+                            var data = getData();
+                            data.id = linkId;
+
+                            $.ajax({
+                                cache: false,
+                                type: "POST",
+                                url: '@(Url.Content("~/Plugin/ProductVideo/UploadData"))',
+                                data: data,
+                                success: function (data, textStatus, jqXHR) {                                        
+                                    updateTable('#productvideos-grid');
+                                },
+                                error: function (jqXHR, textStatus, errorThrown) {
+                                    
+                                },
+                                complete: function (jqXHR, textStatus) {
+                                    $('#addProductVideo').attr('disabled', false);
+                                }
+                            });
+                        }
+
+                        $("#productVideoUploadContainer").fineUploader({
+                            request: {
+                                endpoint: '@(Url.Content("~/Plugin/ProductVideo/UploadVideo/" + Model.ProductId))'
+                            },
+                            template: 'videouploader-qq-template',
+                            multiple: false,
+                            autoUpload: false
+                        }).on("complete", function(event, id, name, responseJSON, xhr) {
+                            console.log(responseJSON);
+                            if (responseJSON.linkId){
+                                uploadData(responseJSON.linkId);
+                            }else{
+                                $('#addProductVideo').attr('disabled', false);
+                            }
+                        });
+            
+
+                        $('#addProductVideo').click(function() {
+                            var data = getData();
+                            if (data.toSec < data.fromSec){
+                                alert("Incorrect time diapason");
+                                return;
+                            }
+                            $('#addProductVideo').attr('disabled', true);
+                            $("#productVideoUploadContainer").fineUploader("uploadStoredFiles");
+                        });
+                    });
+                </script>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        <nop-label asp-for="AddVideoModel.Id" />
+                    </div>
+                    <div class="col-md-9">
+                        <div id='productVideoUploadContainer'></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        <nop-label asp-for="AddVideoModel.OverrideTitleAttribute" />
+                    </div>
+                    <div class="col-md-9">
+                        <nop-editor asp-for="AddVideoModel.OverrideTitleAttribute" />
+                        <span asp-validation-for="AddVideoModel.OverrideTitleAttribute"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        <nop-label asp-for="AddVideoModel.FromSec" />
+                    </div>
+                    <div class="col-md-9">
+                        <nop-editor asp-for="AddVideoModel.FromSec" />
+                        <span asp-validation-for="AddVideoModel.FromSec"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        <nop-label asp-for="AddVideoModel.ToSec" />
+                    </div>
+                    <div class="col-md-9">
+                        <nop-editor asp-for="AddVideoModel.ToSec" />
+                        <span asp-validation-for="AddVideoModel.ToSec"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-9 col-md-offset-3">
+                        <button type="button" id="addProductVideo" class="btn btn-primary">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="panel panel-default">
+            <div class="panel-body">
+                Save product before edit video
+            </div>
+        </div>
+    }
+</div>
+
+<script type="text/template" id="videouploader-qq-template">
+    <div class="qq-uploader-selector qq-uploader">
+        <div class="qq-upload-drop-area-selector qq-upload-drop-area" qq-hide-dropzone>
+            <span>@T("Common.FileUploader.DropFiles")</span>
+        </div>
+        <div class="qq-upload-button-selector qq-upload-button">
+            <div>@T("Common.FileUploader.Upload")</div>
+        </div>
+        <span class="qq-drop-processing-selector qq-drop-processing">
+            <span>@T("Common.FileUploader.Processing")</span>
+            <span class="qq-drop-processing-spinner-selector qq-drop-processing-spinner"></span>
+        </span>
+        <ul class="qq-upload-list-selector qq-upload-list">
+            <li>
+                <div class="qq-progress-bar-container-selector">
+                    <div class="qq-progress-bar-selector qq-progress-bar"></div>
+                </div>
+                <span class="qq-upload-spinner-selector qq-upload-spinner"></span>
+                <span class="qq-edit-filename-icon-selector qq-edit-filename-icon"></span>
+                <span class="qq-upload-file-selector qq-upload-file"></span>
+                <input class="qq-edit-filename-selector qq-edit-filename" tabindex="0" type="text">
+                <span class="qq-upload-size-selector qq-upload-size"></span>
+                <a class="qq-upload-cancel-selector qq-upload-cancel" href="#">@T("Common.FileUploader.Cancel")</a>
+                <a class="qq-upload-retry-selector qq-upload-retry" href="#">@T("Common.FileUploader.Retry")</a>
+                <a class="qq-upload-delete-selector qq-upload-delete" href="#">@T("Common.FileUploader.Delete")</a>
+                <span class="qq-upload-status-text-selector qq-upload-status-text"></span>
+            </li>
+        </ul>
+    </div>
+</script>
+
+
+<nop-alert asp-alert-id="addProductPictureAlert" asp-alert-message="@T("Admin.Catalog.Products.Pictures.Alert.AddNew")" />
+<nop-alert asp-alert-id="productPictureAddAlert" asp-alert-message="@T("Admin.Catalog.Products.Pictures.Alert.PictureAdd")" />

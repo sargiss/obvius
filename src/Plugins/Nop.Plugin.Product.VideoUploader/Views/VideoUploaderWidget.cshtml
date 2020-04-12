@@ -1,0 +1,10 @@
+@model Nop.Plugin.Product.VideoUploader.Models.ProductVideoManagementModel
+
+<nop-panel asp-name="product-crosssells-products" 
+    asp-icon="fa fa-random" 
+    asp-title="Видео" 
+    asp-hide-block-attribute-name="ProductPage.Video" 
+    asp-hide="true" 
+    asp-advanced="false">
+        @await Html.PartialAsync("VideoManagementPanel.cshtml", Model)
+</nop-panel>

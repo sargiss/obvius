@@ -1,0 +1,14 @@
+﻿{
+  "InstalledPluginNames": [
+    "Obsolete field, using only for compatibility"
+  ],
+  "InstalledPlugins": [
+    {
+      "SystemName": "Nop.Plugin.Product.VideoUploader",
+      "Version": "1.0"
+    }
+  ],
+  "PluginNamesToUninstall": [],
+  "PluginNamesToDelete": [],
+  "PluginNamesToInstall": []
+}
