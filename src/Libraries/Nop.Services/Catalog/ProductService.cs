@@ -379,17 +379,32 @@ namespace Nop.Services.Catalog
         /// Get products by identifiers
         /// </summary>
         /// <param name="productIds">Product identifiers</param>
+        /// <param name="getDeleted">Product identifiers</param>
         /// <returns>Products</returns>
-        public virtual IList<Product> GetProductsByIds(int[] productIds)
+        public virtual IList<Product> GetProductsByIds(int[] productIds, bool getDeleted = false)
         {
             if (productIds == null || productIds.Length == 0)
                 return new List<Product>();
 
-            var key = NopCatalogCachingDefaults.ProductsByIdsCacheKey.FillCacheKey(productIds);
+            CacheKey key;
 
-            var query = from p in _productRepository.Table
-                        where productIds.Contains(p.Id) && !p.Deleted
-                        select p;
+            if (getDeleted)
+            {
+                object[] keyCompounds = new object[productIds.Length];
+                keyCompounds[0] = true;
+                Array.Copy(productIds, 0, keyCompounds, 1, productIds.Length);
+                key = NopCatalogCachingDefaults.ProductsByIdsCacheKey.FillCacheKey(keyCompounds);
+            }
+            else
+            {
+                key = NopCatalogCachingDefaults.ProductsByIdsCacheKey.FillCacheKey(productIds);
+            }
+
+            var query = _productRepository.Table.Where(p => productIds.Contains(p.Id)); 
+            if (!getDeleted)
+            {
+                query = query.Where(p => !p.Deleted);
+            }
 
             var products = query.ToCachedList(key);
 

@@ -45,8 +45,9 @@ namespace Nop.Services.Catalog
         /// Gets products by identifier
         /// </summary>
         /// <param name="productIds">Product identifiers</param>
+        /// <param name="getDeleted">return also deleted products</param>
         /// <returns>Products</returns>
-        IList<Product> GetProductsByIds(int[] productIds);
+        IList<Product> GetProductsByIds(int[] productIds, bool getDeleted = false);
 
         /// <summary>
         /// Inserts a product

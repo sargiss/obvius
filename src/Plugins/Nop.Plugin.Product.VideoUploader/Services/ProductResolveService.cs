@@ -20,7 +20,25 @@ namespace Nop.Plugin.Product.VideoUploader.Services
 
         public NopProduct Find(string shortVideoLink, int? videoStreamPositionSec)
         {
-            var videoLinks = _videoRepository.Table.OrderBy(x => x.FromSec).ToList();
+            return shortVideoLink == "any" ? FindAny():
+                FindLinked(shortVideoLink, videoStreamPositionSec);
+        }
+
+        private NopProduct FindAny()
+        {
+            return _videoRepository.Table
+                .Join(_productRepository.Table.Where(x => !x.Deleted), 
+                    pv => pv.ProductId, 
+                    p => p.Id, 
+                    (pv, p) => p)
+                .FirstOrDefault();
+        }
+
+        private NopProduct FindLinked(string shortVideoLink, int? videoStreamPositionSec)
+        {
+            var videoLinks = _videoRepository.Table
+                .Where(x => x.ShortLink == shortVideoLink)
+                .OrderBy(x => x.FromSec).ToList();
 
             ProductVideo productVideo = videoLinks.FirstOrDefault();
             if (productVideo != null && videoStreamPositionSec.HasValue)
