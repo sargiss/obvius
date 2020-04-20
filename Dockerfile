@@ -76,6 +76,6 @@ RUN mkdir logs
 COPY --from=build /app/published .
 COPY --from=build /src/Presentation/Nop.Web/Plugins ./Plugins
 
-VOLUME [ "/app/App_Data/dataSettings.json" ]                            
+VOLUME [ "/app/App_Data/dataSettings.json", "/app/App_Data/plugins.json" ]                            
 
 ENTRYPOINT ["dotnet", "Nop.Web.dll"]

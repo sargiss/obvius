@@ -7,6 +7,7 @@ services:
             - "8008:80"
         volumes:
             - "./configs/dataSettings.json:/app/App_Data/dataSettings.json"
+            - "./configs/plugins.json:/app/App_Data/plugins.json"
         depends_on:
             - nopcommerce_database
     nopcommerce_database:

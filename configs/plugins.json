@@ -1,14 +1,30 @@
-﻿{
-  "InstalledPluginNames": [
-    "Obsolete field, using only for compatibility"
-  ],
-  "InstalledPlugins": [
-    {
-      "SystemName": "Nop.Plugin.Product.VideoUploader",
-      "Version": "1.0"
-    }
-  ],
-  "PluginNamesToUninstall": [],
-  "PluginNamesToDelete": [],
-  "PluginNamesToInstall": []
+﻿{                                                                                                                
+  "InstalledPluginNames": [                                                                                      
+    "Obsolete field, using only for compatibility"                                                               
+  ],                                                                                                             
+  "InstalledPlugins": [                                                                                          
+    {                                                                                                            
+      "SystemName": "Nop.Plugin.Product.VideoUploader",                                                          
+      "Version": "1.0"                                                                                           
+    },                                                                                                           
+    {                                                                                                            
+      "SystemName": "Shipping.UPS",                                                                              
+      "Version": "1.56"                                                                                          
+    },                                                                                                           
+    {                                                                                                            
+      "SystemName": "Payments.PayPalStandard",                                                                   
+      "Version": "1.60"                                                                                          
+    },                                                                                                           
+    {                                                                                                            
+      "SystemName": "Payments.Manual",                                                                           
+      "Version": "1.53"                                                                                          
+    },                                                                                                           
+    {                                                                                                            
+      "SystemName": "Shipping.ShipStation",                                                                      
+      "Version": "1.06"                                                                                          
+    }                                                                                                            
+  ],                                                                                                             
+  "PluginNamesToUninstall": [],                                                                                  
+  "PluginNamesToDelete": [],                                                                                     
+  "PluginNamesToInstall": []                                                                                     
 }
