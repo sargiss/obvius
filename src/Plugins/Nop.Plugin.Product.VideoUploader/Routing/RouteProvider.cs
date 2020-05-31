@@ -33,6 +33,11 @@ namespace Nop.Plugin.Product.VideoUploader.Routing
                 "videos/{videoShortLink}",
                 new { controller = "ShowProduct", action = nameof(ShowProductController.RedirectToProduct) });
 
+            endpointRouteBuilder.MapControllerRoute(
+                "VideoUploaderPlugin_ShowProduct",
+                "stream/products",
+                new { controller = "ShowProduct", action = nameof(ShowProductController.GetProductsForStream) });
+
 
             endpointRouteBuilder.MapControllerRoute(
                 "VideoUploaderPlugin_Test",

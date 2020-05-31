@@ -10,6 +10,8 @@ services:
             - "./configs/plugins.json:/app/App_Data/plugins.json"
         depends_on:
             - nopcommerce_database
+        networks:
+            - obvius-net
     nopcommerce_database:
         image: "obvius-sqlserver-image"
         container_name: obvius-sqlserver
@@ -18,6 +20,8 @@ services:
         environment:
             SA_PASSWORD: "1qaz@WSX"
             ACCEPT_EULA: "Y"
+        networks:
+            - obvius-net
             
-volumes:
-  nopcommerce_data:
+networks: 
+    obvius-net:
