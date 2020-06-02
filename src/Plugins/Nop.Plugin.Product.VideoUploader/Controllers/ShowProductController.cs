@@ -1,3 +1,4 @@
+using System;
 using System.Security.Cryptography.X509Certificates;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
@@ -43,12 +44,13 @@ namespace Nop.Plugin.Product.VideoUploader.Controllers
             var products = _productService.SearchProducts(0, 5);
             return Json(products.Select(x => {
                 var pictires = _productService.GetProductPicturesByProductId(x.Id);
-                var pictureUrl = pictires.Any() ? _pictureService.GetPictureUrl(pictires[0].PictureId): ""; 
+                var pictureUrl = pictires.Any() ? new Uri(_pictureService.GetPictureUrl(pictires[0].PictureId)).PathAndQuery: ""; 
                 return new {
                     Id = x.Id,
                     Name = x.Name,
                     Url = Url.RouteUrl("product", new { SeName = _urlService.GetSeName(x) }),
-                    ImageUrl = pictureUrl
+                    ImageUrl = pictureUrl,
+                    Price = x.Price
                 };
             }));
         }

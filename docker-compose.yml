@@ -1,28 +1,31 @@
-version: "3.4"
-services:
-    nopcommerce_web:
-        build: .
-        container_name: obvius-web
-        ports:
-            - "8008:80"
-        volumes:
-            - "./configs/dataSettings.json:/app/App_Data/dataSettings.json"
-            - "./configs/plugins.json:/app/App_Data/plugins.json"
-        depends_on:
-            - nopcommerce_database
-        networks:
-            - obvius-net
-    nopcommerce_database:
-        image: "obvius-sqlserver-image"
-        container_name: obvius-sqlserver
-        ports:
-            - "1433:1433"
-        environment:
-            SA_PASSWORD: "1qaz@WSX"
-            ACCEPT_EULA: "Y"
-        networks:
-            - obvius-net
-volumes:
-    nopcommerce_data:   
-networks: 
-    obvius-net:
+version: "3.5"                                                                                                                                                                         
+services:                                                                                                                                                                              
+    nopcommerce_web:                                                                                                                                                                   
+        build: .                                                                                                                                                                       
+        container_name: obvius-web                                                                                                                                                     
+        ports:                                                                                                                                                                         
+            - "8008:80"                                                                                                                                                                
+        volumes:                                                                                                                                                                       
+            - "./configs/dataSettings.json:/app/App_Data/dataSettings.json"                                                                                                            
+            - "./configs/plugins.json:/app/App_Data/plugins.json"                                                                                                                      
+        depends_on:                                                                                                                                                                    
+            - nopcommerce_database                                                                                                                                                     
+        networks:                                                                                                                                                                      
+            - obvius-net                                                                                                                                                               
+    nopcommerce_database:                                                                                                                                                              
+        image: "obvius/mssql-server:nopcommerce"                                                                                                                                       
+        container_name: obvius-sqlserver                                                                                                                                               
+        ports:                                                                                                                                                                         
+            - "1433:1433"                                                                                                                                                              
+        volumes:                                                                                                                                                                       
+            - "nopcommerce_storage:/var/opt/mssql"                                                                                                                                     
+        environment:                                                                                                                                                                   
+            SA_PASSWORD: "1qaz@WSX"                                                                                                                                                    
+            ACCEPT_EULA: "Y"                                                                                                                                                           
+        networks:                                                                                                                                                                      
+            - obvius-net                                                                                                                                                               
+volumes:                                                                                                                                                                               
+    nopcommerce_storage:                                                                                                                                                               
+networks:                                                                                                                                                                              
+    obvius-net:                                                                                                                                                                        
+        name: obvius-net 
