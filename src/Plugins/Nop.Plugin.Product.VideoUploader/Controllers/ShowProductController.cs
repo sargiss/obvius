@@ -39,9 +39,9 @@ namespace Nop.Plugin.Product.VideoUploader.Controllers
         }
 
         [HttpGet]
-        public ActionResult GetProductsForStream()
+        public ActionResult GetProductsForStream([FromQuery]int size = 25)
         {
-            var products = _productService.SearchProducts(0, 5);
+            var products = _productService.SearchProducts(0, size);
             return Json(products.Select(x => {
                 var pictires = _productService.GetProductPicturesByProductId(x.Id);
                 var pictureUrl = pictires.Any() ? new Uri(_pictureService.GetPictureUrl(pictires[0].PictureId)).PathAndQuery: ""; 
